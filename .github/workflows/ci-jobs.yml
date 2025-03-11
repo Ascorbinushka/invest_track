@@ -11,6 +11,7 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+
     steps:
       # Checkout the code
       - name: Checkout code
@@ -27,29 +28,16 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          python -m venv .venv # Создаем виртуальное окружение в папке .venv
-          source .venv/bin/activate # Активируем его
-
-          # Устанавливаем зависимости
+          python -m venv venv
+          . venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Run pre-commit hooks
       - name: Run pre-commit on all changed files
         run: |
-          source .venv/bin/activate # Активируем виртуальное окружение!
-
-          # Определяем базовую ветку для сравнения
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            BASE_BRANCH="$GITHUB_BASE_REF"
-          else
-            BASE_BRANCH=$(echo "$GITHUB_REF" | sed 's/refs\/heads\///')
-            BASE_BRANCH="origin/$BASE_BRANCH"
-          fi
-
-          # Получаем список измененных файлов
-          files=$(git diff --name-only $BASE_BRANCH)
-
-          # Если есть измененные файлы, запускаем pre-commit
+          . venv/bin/activate
+          files=$(git diff --name-only origin/main)
           if [ -n "$files" ]; then
             pre-commit run --files $files
           else
