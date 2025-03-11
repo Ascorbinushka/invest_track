@@ -3,10 +3,10 @@ name: Run Pre-commit Hooks with Postgres
 on:
   pull_request:
     branches:
-      - main
+      [ "main", "feature/invest" ]
   push:
     branches:
-      - main
+      [ "main", "feature/invest" ]
 
 jobs:
   pre-commit:
