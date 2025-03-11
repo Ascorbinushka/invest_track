@@ -39,7 +39,19 @@ jobs:
       - name: Run pre-commit on all changed files
         run: |
           . venv/bin/activate
-          files=$(git diff --name-only origin/main)
+
+          # Определяем базовую ветку для сравнения
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            BASE_BRANCH="$GITHUB_BASE_REF"
+          else
+            BASE_BRANCH=$(echo "$GITHUB_REF" | sed 's/refs\/heads\///')
+            BASE_BRANCH="origin/$BASE_BRANCH"
+          fi
+
+          # Получаем список измененных файлов
+          files=$(git diff --name-only $BASE_BRANCH)
+
+          # Если есть измененные файлы, запускаем pre-commit
           if [ -n "$files" ]; then
             pre-commit run --files $files
           else
