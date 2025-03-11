@@ -1,0 +1,79 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="25.0.2">
+  <diagram name="Страница — 1" id="l9uQm70x1CcX6Y0HgjZg">
+    <mxGraphModel dx="1560" dy="1003" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-11" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Extract&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="210" y="210" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-25" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Load&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="410" y="210" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-5" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Analyze&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="601" y="210" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-9" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="280" y="177.5" width="120" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-17" value="" style="group;fillColor=none;strokeColor=#6c8ebf;container=0;" parent="L_GyjE_H-SH6USM7YCmb-9" vertex="1" connectable="0">
+          <mxGeometry width="119.99999999999999" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-15" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6c8ebf;" parent="L_GyjE_H-SH6USM7YCmb-9" vertex="1">
+          <mxGeometry y="26.05263157894737" width="119.99999999999999" height="138.94736842105263" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-16" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;STAGING AREA&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="L_GyjE_H-SH6USM7YCmb-9" vertex="1">
+          <mxGeometry width="119.99999999999999" height="26.05263157894737" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-2" value="" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Database_PostgreSQL_Server.svg;fillColor=none;strokeColor=#6c8ebf;imageBackground=none;" parent="L_GyjE_H-SH6USM7YCmb-9" vertex="1">
+          <mxGeometry x="36" y="67.73684210526318" width="41.684210526315795" height="55.578947368421055" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-10" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="480" y="177.5" width="110" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-26" value="" style="points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;fillColor=#FF6A00;strokeColor=none;shape=mxgraph.alibaba_cloud.clickhouse;" parent="L_GyjE_H-SH6USM7YCmb-10" vertex="1">
+          <mxGeometry x="31" y="68.08000000000001" width="48" height="54.900000000000006" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-21" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#d79b00;" parent="L_GyjE_H-SH6USM7YCmb-10" vertex="1">
+          <mxGeometry y="26.05263157894737" width="110" height="138.94736842105263" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-22" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;DATA MARTS&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="L_GyjE_H-SH6USM7YCmb-10" vertex="1">
+          <mxGeometry width="110" height="26.05263157894737" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-11" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="677" y="177.5" width="110" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#82b366;" parent="L_GyjE_H-SH6USM7YCmb-11" vertex="1">
+          <mxGeometry y="26.05263157894737" width="110" height="138.94736842105263" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-3" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;ANALYTICS&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="L_GyjE_H-SH6USM7YCmb-11" vertex="1">
+          <mxGeometry width="110" height="26.05263157894737" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-6" value="" style="points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;fillColor=#d5e8d4;strokeColor=#82b366;shape=mxgraph.alibaba_cloud.nlp-sa_sentiment_analysis;" parent="L_GyjE_H-SH6USM7YCmb-11" vertex="1">
+          <mxGeometry x="31.299999999999955" y="71.82999999999998" width="47.400000000000006" height="47.400000000000006" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-15" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="220" y="250" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-17" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="410" y="250" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-18" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="80" y="160" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-8" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9673a6;" parent="L_GyjE_H-SH6USM7YCmb-18" vertex="1">
+          <mxGeometry width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-3" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Yahoo%21_Finance_logo_2021.png/1200px-Yahoo%21_Finance_logo_2021.png;" parent="L_GyjE_H-SH6USM7YCmb-18" vertex="1">
+          <mxGeometry x="20" y="30" width="80" height="29.27" as="geometry" />
+        </mxCell>
+        <mxCell id="qP7fIHv9iBUVDqPGmIXw-4" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.services.excel_services;" parent="L_GyjE_H-SH6USM7YCmb-18" vertex="1">
+          <mxGeometry x="30" y="130" width="60" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="L_GyjE_H-SH6USM7YCmb-19" value="" style="shape=singleArrow;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="607" y="250" width="50" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
