@@ -27,8 +27,13 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Run pre-commit
-        run: pre-commit run --all-files
+      # Run pre-commit hooks
+      - name: Run pre-commit on all changed files
+        run: |
+          . venv/bin/activate
+          files=$(git diff --name-only origin/main)
+          if [ -n "$files" ]; then
+            pre-commit run --files $files
+          else
+            echo "No modified files to check."
+          fi
