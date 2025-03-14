@@ -31,7 +31,6 @@ def get_data_company(COMPANIES: list[str], start_date: str, end_date: str, API_K
         Returns:
             pd.DataFrame: DataFrame с данными по акциям для всех компаний.
         """
-    all_data = list()
     for company in COMPANIES:
         url = "https://financialmodelingprep.com/api/v3/historical-price-full/{}?from={}&to={}&apikey={}".format(
             company, start_date, end_date, API_KEY)
@@ -40,15 +39,11 @@ def get_data_company(COMPANIES: list[str], start_date: str, end_date: str, API_K
             response_json = response.json()
             if response_json:
                 parsed_data = StockData(**response_json)
-                print(parsed_data)
                 yield parsed_data
-    #             all_data.append(parsed_data)
-    # return all_data
 
 
 if __name__ == '__main__':
-    company = ["GOOGL", "AAPL"]
-    API_KEY = 'aQwbfnw3sTcopw8gl2D6EE83uWAGYNWb'
+    API_KEY = 'API_KEY'
     COMPANIES = [
         "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "JPM", "BAC", "WFC", "JNJ", "UNH",
         "MRK", "PFE", "PG", "KO", "PEP", "XOM", "CVX", "GE", "HON", "LMT",
@@ -62,7 +57,3 @@ if __name__ == '__main__':
     print(data)
     for i in data:
         print(i)
-
-    #
-    # data.to_excel('yahoo_fin.xlsx')
-    # # data.to_csv('yahoo_fin.csv')

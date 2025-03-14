@@ -1,4 +1,7 @@
 import os
+from typing import Any
+from sqlalchemy import create_engine
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import psycopg2
 import dotenv
@@ -10,15 +13,29 @@ dotenv.load_dotenv()
 # print(ENV_PATH)
 
 class Settings(BaseSettings):
-    DB_HOST: str
-    DB_PORT: int
-    DB_USER: str
-    DB_PASS: str
-    DB_NAME: str
+    PG_HOST: str
+    PG_PORT: int
+    PG_USER: str
+    PG_PASSWORD: str
+    PG_DATABASE: str
 
     COMPANIES: str
+    API_KEY: str
+
     # model_config = SettingsConfigDict(env_file=ENV_PATH,
     #                                   extra='ignore')
+    def gp_engine(self) -> Any | None:
+        db_string = f"postgresql+psycopg2://{self.PG_USER}:{self.PG_PASSWORD}@{self.PG_HOST}:{self.PG_PORT}/{self.PG_DATABASE}"
+
+        try:
+            engine = create_engine(db_string)  # Создаем движок SQLAlchemy
+            # engine.connect()  # Проверяем подключение (необязательно)
+            print("Движок SQLAlchemy успешно создан.")
+            return engine
+        except Exception as e:
+            print(f"Ошибка при создании движка SQLAlchemy: {e}")
+            return None
+
 
 
 try:
@@ -40,9 +57,9 @@ class DatabaseConnection:
         if DatabaseConnection.__instance:
             raise Exception("Этот класс является Singleton, используйте метод get_instance()")
         else:
-            self.connection = psycopg2.connect(database=settings.DB_NAME, user=settings.DB_USER,
-                                               password=settings.DB_PASS,
-                                               host=settings.DB_HOST, port=settings.DB_PORT)
+            self.connection = psycopg2.connect(database=settings.PG_DATABASE, user=settings.PG_USER,
+                                               password=settings.PG_PASSWORD,
+                                               host=settings.PG_HOST, port=settings.PG_PORT)
             DatabaseConnection.__instance = self
 
     def get_connection(self):

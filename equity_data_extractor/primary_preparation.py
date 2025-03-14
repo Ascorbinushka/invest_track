@@ -1,8 +1,10 @@
 from config import DatabaseConnection, Settings
 from get_yf_data import get_data_company
 from datetime import datetime, timedelta
-from base_config import Stocks, StocksDaily, Generate_DDL
-from stock_trading import generate_transactions, save_transactions_to_excel
+from base_config import Stocks, StocksDaily, Generate_DDL, Users
+from stock_trading import generate_transactions, save_transactions_to_csv
+import csv
+import os
 
 db_connection = DatabaseConnection.get_instance()
 
@@ -19,7 +21,6 @@ def generation_stock_prices(COMPANIES: list[str], start_date: str, end_date: str
     """
 
     DATA = get_data_company(COMPANIES=COMPANIES, start_date=start_date, end_date=end_date, API_KEY=API_KEY)
-    print(DATA)
 
     for company_data in DATA:
         ticker = company_data.symbol
@@ -36,7 +37,6 @@ def generation_stock_prices(COMPANIES: list[str], start_date: str, end_date: str
         ticker_id = id_stock[0]  #Извлекаем ID  (предполагается, что get_id_stock возвращает список или кортеж)
 
         for daily_data in company_data.historical:
-            print(daily_data.date)
             StocksDaily(db_connection).insert_stocks_daily(
                 ticker_id=ticker_id,
                 date=daily_data.date,
@@ -47,43 +47,41 @@ def generation_stock_prices(COMPANIES: list[str], start_date: str, end_date: str
             )
 
 
-def main(COMPANIES: list[str], start_date: str, end_date: str, API_KEY) -> None:
+def main() -> None:
     """Загрузка первичных данных и генерация тестовых транзакций"""
-    Generate_DDL(db_connection).create_postgres_table("DDL.sql")
+    # # Generate_DDL(db_connection).create_postgres_table("../init/pg/DDL.sql")
+    #
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    csv_file = os.path.join(current_directory, 'users.csv')
+    with open(csv_file, 'r', encoding='utf-8') as f:
+        csv_reader = csv.DictReader(f)  # Используем DictReader для доступа к данным по названию колонок
+        user_load = Users(db_connection)  # Инициализируем объект Users
+        for row in csv_reader:
+            # Извлекаем значения из текущей строки CSV-файла
+            first_name = row["first_name"]
+            last_name = row['last_name']
+            email = f"{row["first_name"].lower()}_{row['last_name'].lower()}@gmail.com"
+            country = row['country']
+            data = user_load.get_user(first_name=first_name, last_name=last_name)
+            if data is None:
+                user_load.insert_user(first_name=first_name, last_name=last_name, email=email, country=country)
 
-    # generation_stock_prices(COMPANIES=COMPANIES, start_date=start_date, end_date=end_date, API_KEY=API_KEY)
-    stocks_daily = StocksDaily(db_connection)
+    #
+    # COMPANIES = Settings().COMPANIES
+    # API_KEY = Settings().API_KEY
+    # companies_list = COMPANIES.split(",")
+    #
+    # start_date = (datetime.today() - timedelta(days=2000)).strftime("%Y-%m-%d")
+    # end_date = datetime.today().strftime("%Y-%m-%d")
+    #
+    # generation_stock_prices(COMPANIES=companies_list, start_date=start_date, end_date=end_date, API_KEY=API_KEY)
 
-    df = generate_transactions(companies=COMPANIES, dates=[date[0] for date in stocks_daily.get_date()])
-    filename = 'transactions.xlsx'
-    save_transactions_to_excel(df, filename)
+    # stocks_daily = StocksDaily(db_connection)
+    # df = generate_transactions(companies=companies_list*30000, dates=[date[0] for date in stocks_daily.get_date()])
+    # current_directory = os.path.dirname(os.path.abspath(__file__))
+    # filename = os.path.join(current_directory, 'transactions.csv')
+    # save_transactions_to_csv(df, filename)
 
 
 if __name__ == '__main__':
-    # COMPANIES = Settings().COMPANIES
-    # companies_list = COMPANIES.strip("[]").replace(" ", "").split(",")
-    #
-    # API_KEY = 'aQwbfnw3sTcopw8gl2D6EE83uWAGYNWb'
-    #
-    # start_date = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
-    # end_date = datetime.today().strftime("%Y-%m-%d")
-    # main(COMPANIES=companies_list, start_date=start_date, end_date=end_date, API_KEY=API_KEY)
-    from pyspark.sql import SparkSession
-    import pandas as pd
-    import os
-
-    os.environ["PYARROW_IGNORE_TIMEZONE"] = "1"
-    # spark = SparkSession.builder \
-    #     .master("local[*]") \
-    #     .appName('PySpark_Tutorial') \
-    #     .getOrCreate()
-    # excel_file = 'transactions.xlsx'
-    # pandas_df = pd.read_excel(excel_file)
-    # spark_df = spark.createDataFrame(pandas_df)
-    # # Чтение CSV файла
-    # spark_df.printSchema()
-    # print(spark_df.show(5))
-
-    spark = SparkSession.builder.getOrCreate()
-    spark.conf.set("spark.sql.execution.arrow.pyspark.enabled", "true")
-    print(spark)
+    main()

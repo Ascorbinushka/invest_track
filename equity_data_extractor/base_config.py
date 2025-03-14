@@ -1,4 +1,6 @@
-from config import DatabaseConnection
+from typing import Any
+
+from equity_data_extractor.config import DatabaseConnection
 import psycopg2
 
 
@@ -24,7 +26,7 @@ class Stocks:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def get_id_stock(self, ticker):
+    def get_id_stock(self, ticker: str) -> str | None:
         """Получает ticker_id для заданного ticker."""
         query = "SELECT ticker_id FROM financial_models.stocks WHERE ticker = %s"
         try:
@@ -35,7 +37,7 @@ class Stocks:
             print(f"Ошибка при получении ticker_id: {e}")
             return None
 
-    def insert_stock(self, ticker):
+    def insert_stock(self, ticker: str) -> None:
         """Вставляет новый ticker в таблицу stocks."""
         query = "INSERT INTO financial_models.stocks (ticker) VALUES (%s)"
         try:
@@ -47,12 +49,25 @@ class Stocks:
             self.db_connection.get_connection().rollback()
             print(f"Ошибка при вставке ticker: {e}")
 
+    def get_stock_id_stock(self):
+        """Получает ticker_id и ticker."""
+        query = "SELECT ticker_id, ticker FROM financial_models.stocks"
+        try:
+            with self.db_connection.get_connection().cursor() as cursor:
+                cursor.execute(query)
+                res = cursor.fetchall()
+                return res
+        except psycopg2.Error as e:
+            print(f"Ошибка при получении ticker_id: {e}")
+            return None
+
 
 class StocksDaily:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def insert_stocks_daily(self, ticker_id, date, open, high, low, close):
+    def insert_stocks_daily(self, ticker_id: str, date: str, open: float, high: float, low: float,
+                            close: float) -> None:
         """Вставляет данные котировок в таблицу stocks_daily по одной строке."""
         query = """
                 INSERT INTO financial_models.stocks_daily (ticker_id, date, open, high, low, close)
@@ -82,6 +97,41 @@ class StocksDaily:
                 return dates
         except psycopg2.Error as e:
             print(f"Ошибка при получении ticker_id: {e}")
+            return None
+
+
+class Users:
+    def __init__(self, db_connection):
+        self.db_connection = db_connection
+
+    def insert_user(self, first_name: str, last_name: str, email: str, country: str) -> None:
+        """Вставляем пользователей из csv"""
+        query = "INSERT INTO financial_models.users (first_name, last_name, email, country) VALUES (%s, %s, %s, %s) ON CONFLICT (first_name, last_name) DO NOTHING"
+        try:
+            with self.db_connection.get_connection().cursor() as cursor:
+                cursor.execute(query, (first_name, last_name, email, country))
+                row_count = cursor.rowcount
+            self.db_connection.get_connection().commit()
+            if row_count > 0:
+                print(f"Вставлен новый пользователь: {first_name}, {last_name},{email},{country}")
+            else:
+                print(f"Такой пользователь уже есть: {first_name}, {last_name}")
+        except psycopg2.Error as e:
+            self.db_connection.get_connection().rollback()
+            print(f"Ошибка при вставке пользователя: {first_name}, {last_name},{email},{country}. Ошибка {e}")
+
+    def get_user(self, first_name: str, last_name: str):
+        query = f"SELECT users_id FROM financial_models.users WHERE first_name = %s AND last_name = %s"
+        try:
+            with self.db_connection.get_connection().cursor() as cursor:
+                cursor.execute(query, (first_name, last_name))
+                res = cursor.fetchall()
+                if res:
+                    return res
+                else:
+                    return None
+        except psycopg2.Error as e:
+            print(f"Данные уже вставлены: {first_name}, {last_name}")
             return None
 
 

@@ -1,0 +1,122 @@
+[
+    {
+        "ticker": "AAPL",
+        "ticker_id": 1
+    },
+    {
+        "ticker": "MSFT",
+        "ticker_id": 2
+    },
+    {
+        "ticker": "GOOGL",
+        "ticker_id": 3
+    },
+    {
+        "ticker": "AMZN",
+        "ticker_id": 4
+    },
+    {
+        "ticker": "NVDA",
+        "ticker_id": 5
+    },
+    {
+        "ticker": "JPM",
+        "ticker_id": 6
+    },
+    {
+        "ticker": "BAC",
+        "ticker_id": 7
+    },
+    {
+        "ticker": "WFC",
+        "ticker_id": 8
+    },
+    {
+        "ticker": "JNJ",
+        "ticker_id": 9
+    },
+    {
+        "ticker": "UNH",
+        "ticker_id": 10
+    },
+    {
+        "ticker": "MRK",
+        "ticker_id": 11
+    },
+    {
+        "ticker": "PFE",
+        "ticker_id": 12
+    },
+    {
+        "ticker": "PG",
+        "ticker_id": 13
+    },
+    {
+        "ticker": "KO",
+        "ticker_id": 14
+    },
+    {
+        "ticker": "PEP",
+        "ticker_id": 15
+    },
+    {
+        "ticker": "XOM",
+        "ticker_id": 16
+    },
+    {
+        "ticker": "CVX",
+        "ticker_id": 17
+    },
+    {
+        "ticker": "GE",
+        "ticker_id": 18
+    },
+    {
+        "ticker": "HON",
+        "ticker_id": 19
+    },
+    {
+        "ticker": "LMT",
+        "ticker_id": 20
+    },
+    {
+        "ticker": "META",
+        "ticker_id": 21
+    },
+    {
+        "ticker": "VZ",
+        "ticker_id": 22
+    },
+    {
+        "ticker": "T",
+        "ticker_id": 23
+    },
+    {
+        "ticker": "DIS",
+        "ticker_id": 24
+    },
+    {
+        "ticker": "AMT",
+        "ticker_id": 25
+    },
+    {
+        "ticker": "PLD",
+        "ticker_id": 26
+    },
+    {
+        "ticker": "TSM",
+        "ticker_id": 27
+    },
+    {
+        "ticker": "SHEL",
+        "ticker_id": 28
+    },
+    {
+        "ticker": "BRK.B",
+        "ticker_id": 29
+    },
+    {
+        "ticker": "NKE",
+        "ticker_id": 30
+    }
+]
