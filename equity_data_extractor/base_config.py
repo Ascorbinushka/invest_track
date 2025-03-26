@@ -135,6 +135,25 @@ class Users:
             return None
 
 
+class TradeExecution:
+    def __init__(self, db_connection):
+        self.db_connection = db_connection
+
+    def get_max_trade_id(self):
+        query = f"SELECT max(trade_id) FROM financial_models.trade_execution"
+        try:
+            with self.db_connection.get_connection().cursor() as cursor:
+                cursor.execute(query)
+                res = cursor.fetchall()
+                if res:
+                    return res
+                else:
+                    return None
+        except psycopg2.Error as e:
+            print(f"Ошибка: {e}")
+            return None
+
+
 if __name__ == '__main__':
     db_connection = DatabaseConnection.get_instance()
     ddl_generator = Generate_DDL(db_connection)

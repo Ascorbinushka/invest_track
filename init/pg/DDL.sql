@@ -28,7 +28,7 @@ CREATE TABLE if not exists financial_models.users (
 );
 
 CREATE TABLE if not exists financial_models.trade_execution (
-	trade_id serial4 NOT NULL,
+	trade_id int4 NOT NULL,
 	ticker_id int4 NOT NULL,
 	cnt_stock numeric NOT NULL,
 	trade_time timestamp NOT NULL,
@@ -46,5 +46,3 @@ ON financial_models.stocks_daily (ticker_id, date);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_uniq_users
 ON financial_models.users (first_name, last_name);
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_uniq_trade
-ON financial_models.trade_execution (trade_id, cnt_stock, trade_time,user_id, trade_type);

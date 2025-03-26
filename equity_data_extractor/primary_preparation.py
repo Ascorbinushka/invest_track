@@ -49,38 +49,40 @@ def generation_stock_prices(COMPANIES: list[str], start_date: str, end_date: str
 
 def main() -> None:
     """Загрузка первичных данных и генерация тестовых транзакций"""
-    # # Generate_DDL(db_connection).create_postgres_table("../init/pg/DDL.sql")
-    #
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    csv_file = os.path.join(current_directory, 'users.csv')
-    with open(csv_file, 'r', encoding='utf-8') as f:
-        csv_reader = csv.DictReader(f)  # Используем DictReader для доступа к данным по названию колонок
-        user_load = Users(db_connection)  # Инициализируем объект Users
-        for row in csv_reader:
-            # Извлекаем значения из текущей строки CSV-файла
-            first_name = row["first_name"]
-            last_name = row['last_name']
-            email = f"{row["first_name"].lower()}_{row['last_name'].lower()}@gmail.com"
-            country = row['country']
-            data = user_load.get_user(first_name=first_name, last_name=last_name)
-            if data is None:
-                user_load.insert_user(first_name=first_name, last_name=last_name, email=email, country=country)
+    # Загрузка пользователей
+    # current_directory = os.path.dirname(os.path.abspath(__file__))
+    # csv_file = os.path.join(current_directory, 'users.csv')
+    # with open(csv_file, 'r', encoding='utf-8') as f:
+    #     csv_reader = csv.DictReader(f)  # Используем DictReader для доступа к данным по названию колонок
+    #     user_load = Users(db_connection)  # Инициализируем объект Users
+    #     for row in csv_reader:
+    #         # Извлекаем значения из текущей строки CSV-файла
+    #         first_name = row["first_name"]
+    #         last_name = row['last_name']
+    #         email = f"{row["first_name"].lower()}_{row['last_name'].lower()}@gmail.com"
+    #         country = row['country']
+    #         data = user_load.get_user(first_name=first_name, last_name=last_name)
+    #         if data is None:
+    #             user_load.insert_user(first_name=first_name, last_name=last_name, email=email, country=country)
 
-    #
-    # COMPANIES = Settings().COMPANIES
+    # # Генерация данных акций и загрузка их в БД
+    COMPANIES = Settings().COMPANIES
     # API_KEY = Settings().API_KEY
-    # companies_list = COMPANIES.split(",")
+    companies_list = COMPANIES.split(",")
     #
     # start_date = (datetime.today() - timedelta(days=2000)).strftime("%Y-%m-%d")
     # end_date = datetime.today().strftime("%Y-%m-%d")
     #
     # generation_stock_prices(COMPANIES=companies_list, start_date=start_date, end_date=end_date, API_KEY=API_KEY)
+    #
+    # Генерация транзакций
+    stocks_daily = StocksDaily(db_connection)
 
-    # stocks_daily = StocksDaily(db_connection)
-    # df = generate_transactions(companies=companies_list*30000, dates=[date[0] for date in stocks_daily.get_date()])
-    # current_directory = os.path.dirname(os.path.abspath(__file__))
-    # filename = os.path.join(current_directory, 'transactions.csv')
-    # save_transactions_to_csv(df, filename)
+    df = generate_transactions(companies=companies_list*30000, dates=[date[0] for date in stocks_daily.get_date()])
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(current_directory, 'transactions.csv')
+    # Сохранение транзакций в csv
+    save_transactions_to_csv(df, filename)
 
 
 if __name__ == '__main__':

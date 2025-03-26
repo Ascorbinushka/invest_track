@@ -49,6 +49,8 @@ def generate_transactions1(companies: list[str], dates: list[datetime]):
     remove_indices = random.sample(sell_indices, num_to_remove)
     transactions_df = transactions_df.drop(remove_indices)
     return transactions_df
+
+
 def generate_transactions(companies: list[str], dates: list[datetime]):
     # Сортируем даты для обеспечения хронологии
     dates.sort()
@@ -125,16 +127,19 @@ def generate_transactions(companies: list[str], dates: list[datetime]):
     # transactions_df = transactions_df.drop(remove_indices)
     # return transactions_df
 
+
 def save_transactions_to_csv(df: pd.DataFrame, filename: str):
     """
-    Сохраняет DataFrame с транзакциями в Excel-файл, дополняя существующие данные и избегая дублирования строк.
+    Сохраняет DataFrame с транзакциями в CSV-файл, дополняя существующие данные,
+    избегая дублирования строк (удаляя их из новых данных) и обеспечивая
+    последовательную нумерацию trade_id.
 
     Args:
-        df: DataFrame с транзакциями.
-        filename: Имя файла Excel.
+        df: DataFrame с новыми транзакциями.
+        filename: Имя CSV-файла.
     """
     try:
-        # Проверяем, существует ли файл
+        # 1. Открываем существующий CSV-файл (если он есть)
         try:
             existing_df = pd.read_csv(filename)
             print("Существующие данные в файле:\n", existing_df)
@@ -142,19 +147,53 @@ def save_transactions_to_csv(df: pd.DataFrame, filename: str):
             existing_df = pd.DataFrame()
             print("Файл не найден. Будет создан новый файл.")
 
-        # Объединяем существующий DataFrame с новым
-        combined_df = pd.concat([existing_df, df], ignore_index=True)
+        # 2. Определяем дубликаты в новых данных на основе существующих данных
+        #   и удаляем их из новых данных
+        if not existing_df.empty:
+            duplicates = df.merge(existing_df,
+                                  on=['trade_time', 'ticker', 'trade_type'],
+                                  how='inner',
+                                  suffixes=('_new', '_existing'))
+            if not duplicates.empty:
+                print("Найдены дубликаты. Удаляем их из новых данных.")
+                # Get index to drop it from 'df'
+                duplicate_index = duplicates.index.to_list()
+                df = df.drop(duplicate_index)
+                print("Новые данные после удаления дубликатов:\n", df)
+            else:
+                print("Дубликаты не найдены.")
 
-        # Удаляем дублирующие строки по полям 'dt', 'company', 'transaction_type'
-        combined_df = combined_df.drop_duplicates(subset=['trade_time', 'ticker', 'trade_type'])
+        # 3. Генерируем trade_id для новых данных
+        if not df.empty:  # Проверяем, остались ли данные после удаления дубликатов
+            if 'trade_id' in existing_df.columns:  # Check for existing ids
+                max_id = existing_df['trade_id'].max()
+                if pd.isna(max_id):  # Check for NaN values
+                    max_id = 0  # Handle NaN case
+            else:
+                max_id = 0
+
+            start_id = int(max_id + 1)  # Make it int and handle potential NaN
+
+            df['trade_id'] = range(start_id, start_id + len(df))
+            print("Новые данные с сгенерированным trade_id:\n", df)
+        else:
+            print("После удаления дубликатов не осталось новых данных для добавления.")
+            df = pd.DataFrame()
+
+        # 4. Объединяем новые данные с существующими данными
+        if not df.empty:
+            combined_df = pd.concat([existing_df, df], ignore_index=True)
+        else:
+            combined_df = existing_df
 
         print("Объединённые данные:\n", combined_df)
 
-        # Сохраняем обновлённый DataFrame в Excel
+        # 5. Сохраняем обновлённый DataFrame в CSV
         combined_df.to_csv(filename, index=False)
         print(f"Транзакции успешно сохранены в файл: {filename}")
+
     except Exception as e:
-        print(f"Ошибка при сохранении в Excel-файл: {e}")
+        print(f"Ошибка при сохранении в CSV-файл: {e}")
 
 
 if __name__ == '__main__':
@@ -169,7 +208,7 @@ if __name__ == '__main__':
         datetime(2023, 2, 1)
 
     ]
-    print(stocks*len(dates))
-    df = generate_transactions(companies=stocks*len(dates), dates=dates)
-    filename = 'transactions.xlsx'
+    print(stocks * len(dates))
+    df = generate_transactions(companies=stocks * len(dates), dates=dates)
+    filename = 'transactions.csv'
     save_transactions_to_csv(df, filename)
