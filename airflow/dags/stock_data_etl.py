@@ -100,7 +100,7 @@ def df_to_db(df, schema, table, force=False):
 
 
 if __name__ == '__main__':
-    # ETL
+    # ETL - 1
     # 1. Добавляем в xcom словарик акций и их ticker_id
     # save_ticker_to_json()
     # 2. Записываем в xcom последний trade_id из бд табл. trade_execution
@@ -124,3 +124,7 @@ if __name__ == '__main__':
     transactions_df = replace_ticker_with_id_from_json(df=filter_df, json_file=file_path_json)
     print(transactions_df)
     df_to_db(df=transactions_df, schema='financial_models', table='trade_execution')
+    # ETL - 2
+    # 1 - забираем минимальную и максимальную дату каждой акций в xcom
+    # 2 - по api забираем цены открытий и закрытий акций и кладем в бд
+    # 3 и 4 - переносим данные в CH и строим там витрины, плюс строим витрины в pg для мониторинга данных (например, для всех ли акций есть данные котировок и т.п.)
