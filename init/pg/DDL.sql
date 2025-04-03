@@ -32,7 +32,7 @@ CREATE TABLE if not exists financial_models.trade_execution (
 	ticker_id int4 NOT NULL,
 	cnt_stock numeric NOT NULL,
 	trade_time timestamp NOT NULL,
-	user_id int4 NOT NULL,
+	users_id int4 NOT NULL,
 	trade_type varchar NOT NULL,
 	CONSTRAINT trade_execution_pk PRIMARY KEY (trade_id),
     CONSTRAINT trade_execution_stocks_fk FOREIGN KEY (ticker_id) REFERENCES financial_models.stocks(ticker_id),
