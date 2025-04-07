@@ -1,74 +1,29 @@
 import pandas as pd
 from datetime import datetime
-import os
 import random
-from random import randint
 
 
-def generate_transactions1(companies: list[str], dates: list[datetime]):
-    if not dates or len(dates) < 2:
-        print("Недостаточно дат для выбора покупки и продажи.")
-        return None
+def generate_transactions(companies: list[str], dates: list[datetime], sell_probability: float = 0.65):
+    """
+        Генерирует DataFrame транзакций (покупка и продажа) с учетом хронологического порядка дат и вероятности продажи.
 
-    if len(companies) > len(dates) // 2:
-        print(
-            "Недостаточно дат для всех компаний. Каждая компания должна иметь как минимум одну покупку и одну продажу.")
-        return None
+        Args:
+            companies: Список тикеров акций (строки).
+            dates: Список объектов datetime (отсортированных по возрастанию).
+            user_id: Идентификатор пользователя (int).
+            amount: Количество акций в сделке (int).
+            sell_probability: Вероятность продажи (от 0.0 до 1.0).  По умолчанию 0.65.
 
-        # Сортируем даты для обеспечения хронологии
-    dates.sort()
-
+        Returns:
+            pandas.DataFrame: DataFrame с транзакциями.
+        """
     transactions = []
-    num_transactions = len(dates)  # Определяем, что записей будет примерно половина всех дат
-
-    for i in range(num_transactions):
-        # Проверяем, что ещё есть доступные компании и даты
-        if len(companies) > i and len(dates) >= 2:
-            # Берём первую доступную дату для покупки
-            purchase_date = dates.pop(0)
-            # Берём последнюю доступную дату для продажи
-            sell_date = dates.pop(-1)
-
-            # Количество акций
-            amount = random.randint(1, 1000)
-
-            user_id = random.randint(1, 93951)
-
-            transactions.append(
-                {'ticker': companies[i], 'cnt_stock': amount, 'trade_time': purchase_date, 'user_id': user_id,
-                 'trade_type': 'buy'})
-            transactions.append(
-                {'ticker': companies[i], 'cnt_stock': amount, 'trade_time': sell_date, 'user_id': user_id,
-                 'trade_type': 'sell'})
-
-    # Создаем DataFrame
-    transactions_df = pd.DataFrame(transactions)
-    # Удаляем половину транзакций с типом "sell"
-    sell_indices = transactions_df[transactions_df['trade_type'] == 'sell'].index.tolist()
-    num_to_remove = len(sell_indices) // 2
-    remove_indices = random.sample(sell_indices, num_to_remove)
-    transactions_df = transactions_df.drop(remove_indices)
-    return transactions_df
+    num_dates = len(dates)
 
 
-def generate_transactions(companies: list[str], dates: list[datetime]):
-    # Сортируем даты для обеспечения хронологии
-    dates.sort()
-    transactions = []
-
-    while len(dates) > 0 and len(companies) > 0:
-        # Берём первую дату для покупки
-        purchase_date = dates.pop(0)
-
-        # Проверяем, есть ли третья дата для продажи
-        sell_date = None
-        if len(dates) > 2:  # Достаточно дат для +3
-            sell_date = dates.pop(2)  # Убираем третью дату в списке
-
-        # Для текущей компании создаём транзакции
-        current_company = companies.pop(0)  # Убираем текущую компанию из списка
-
-        # Случайные параметры для транзакции
+    for current_company in companies:
+        start_index = random.randint(0, num_dates - 1)
+        start_date = dates[start_index]
         amount = random.randint(1, 1000)
         user_id = random.randint(1, 93951)
 
@@ -76,124 +31,121 @@ def generate_transactions(companies: list[str], dates: list[datetime]):
         transactions.append({
             'ticker': current_company,
             'cnt_stock': amount,
-            'trade_time': purchase_date,
-            'user_id': user_id,
+            'trade_time': start_date,
+            'users_id': user_id,
             'trade_type': 'buy'
         })
 
-        # Добавляем запись о продаже, если есть дата продажи
-        if sell_date:
+        # Проверяем вероятность продажи
+        if random.random() < sell_probability:
+            # Выбираем случайный индекс даты продажи (не раньше start_index)
+            end_index = random.randint(start_index, num_dates - 1)
+            end_date = dates[end_index]
+
+            # Добавляем запись о продаже
             transactions.append({
                 'ticker': current_company,
                 'cnt_stock': amount,
-                'trade_time': sell_date,
-                'user_id': user_id,
+                'trade_time': end_date,
+                'users_id': user_id,
                 'trade_type': 'sell'
             })
 
-    # Создаём DataFrame из транзакций
     transactions_df = pd.DataFrame(transactions)
     return transactions_df
 
-    # transactions = []
-    # num_transactions = len(dates)  # Определяем, что записей будет примерно половина всех дат
-    #
-    # for i in range(num_transactions):
-    #     # Проверяем, что ещё есть доступные компании и даты
-    #     if len(companies) > i and len(dates) >= 2:
-    #         # Берём первую доступную дату для покупки
-    #         purchase_date = dates.pop(0)
-    #         # Берём последнюю доступную дату для продажи
-    #         sell_date = dates.pop(-1)
-    #
-    #         # Количество акций
-    #         amount = random.randint(1, 1000)
-    #
-    #         user_id = random.randint(1, 93951)
-    #
-    #         transactions.append(
-    #             {'ticker': companies[i], 'cnt_stock': amount, 'trade_time': purchase_date, 'user_id': user_id,
-    #              'trade_type': 'buy'})
-    #         transactions.append(
-    #             {'ticker': companies[i], 'cnt_stock': amount, 'trade_time': sell_date, 'user_id': user_id,
-    #              'trade_type': 'sell'})
-    #
-    # # Создаем DataFrame
-    # transactions_df = pd.DataFrame(transactions)
-    # # Удаляем половину транзакций с типом "sell"
-    # sell_indices = transactions_df[transactions_df['trade_type'] == 'sell'].index.tolist()
-    # num_to_remove = len(sell_indices) // 2
-    # remove_indices = random.sample(sell_indices, num_to_remove)
-    # transactions_df = transactions_df.drop(remove_indices)
-    # return transactions_df
+
+def load_existing_transactions(filename: str) -> pd.DataFrame:
+    """Загружает существующие транзакции из CSV-файла или возвращает пустой DataFrame, если файл не найден."""
+    try:
+        existing_df = pd.read_csv(filename)
+        print("Существующие данные в файле:\n", existing_df)
+        return existing_df
+    except FileNotFoundError:
+        print("Файл не найден. Будет создан новый файл.")
+        return pd.DataFrame()
+
+
+def find_and_remove_duplicates(new_df: pd.DataFrame, existing_df: pd.DataFrame) -> pd.DataFrame:
+    """Находит и удаляет дубликаты из новых данных на основе существующих данных."""
+    if existing_df.empty:
+        print("Существующие данные отсутствуют. Дубликаты не ищутся.")
+        return new_df
+
+    duplicates = new_df.merge(existing_df,
+                              on=['trade_time', 'ticker', 'trade_type'],
+                              how='inner',
+                              suffixes=('_new', '_existing'))
+
+    if not duplicates.empty:
+        print("Найдены дубликаты. Удаляем их из новых данных.")
+        new_df = new_df.drop(duplicates.index)
+        print("Новые данные после удаления дубликатов:\n", new_df)
+    else:
+        print("Дубликаты не найдены.")
+    return new_df
+
+
+def generate_trade_ids(df: pd.DataFrame, existing_df: pd.DataFrame) -> pd.DataFrame:
+    """Генерирует trade_id для новых данных, обеспечивая последовательную нумерацию."""
+    if df.empty:
+        print("Нет новых данных для генерации trade_id.")
+        return df
+
+    if 'trade_id' in existing_df.columns:
+        max_id = existing_df['trade_id'].max()
+        max_id = 0 if pd.isna(max_id) else int(max_id)  # Handle NaN
+    else:
+        max_id = 0
+
+    start_id = int(max_id + 1)
+    df['trade_id'] = range(start_id, start_id + len(df))
+    print("Новые данные с сгенерированным trade_id:\n", df)
+    return df
+
+
+def combine_dataframes(existing_df: pd.DataFrame, new_df: pd.DataFrame) -> pd.DataFrame:
+    """Объединяет новые данные с существующими данными."""
+    if new_df.empty:
+        print("Новые данные отсутствуют. Возвращаются существующие данные.")
+        return existing_df
+
+    combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+    print("Объединённые данные:\n", combined_df)
+    return combined_df
 
 
 def save_transactions_to_csv(df: pd.DataFrame, filename: str):
     """
-    Сохраняет DataFrame с транзакциями в CSV-файл, дополняя существующие данные,
-    избегая дублирования строк (удаляя их из новых данных) и обеспечивая
-    последовательную нумерацию trade_id.
+    Сохраняет DataFrame с транзакциями в CSV-файл.
+
+    Args:
+        df: DataFrame для сохранения.
+        filename: Имя CSV-файла.
+    """
+    try:
+        df.to_csv(filename, index=False)
+        print(f"Транзакции успешно сохранены в файл: {filename}")
+    except Exception as e:
+        print(f"Ошибка при сохранении в CSV-файл: {e}")
+
+
+def process_and_save_transactions(df: pd.DataFrame, filename: str):
+    """
+    Координирует процесс загрузки, обработки и сохранения транзакций.
 
     Args:
         df: DataFrame с новыми транзакциями.
         filename: Имя CSV-файла.
     """
     try:
-        # 1. Открываем существующий CSV-файл (если он есть)
-        try:
-            existing_df = pd.read_csv(filename)
-            print("Существующие данные в файле:\n", existing_df)
-        except FileNotFoundError:
-            existing_df = pd.DataFrame()
-            print("Файл не найден. Будет создан новый файл.")
-
-        # 2. Определяем дубликаты в новых данных на основе существующих данных
-        #   и удаляем их из новых данных
-        if not existing_df.empty:
-            duplicates = df.merge(existing_df,
-                                  on=['trade_time', 'ticker', 'trade_type'],
-                                  how='inner',
-                                  suffixes=('_new', '_existing'))
-            if not duplicates.empty:
-                print("Найдены дубликаты. Удаляем их из новых данных.")
-                # Get index to drop it from 'df'
-                duplicate_index = duplicates.index.to_list()
-                df = df.drop(duplicate_index)
-                print("Новые данные после удаления дубликатов:\n", df)
-            else:
-                print("Дубликаты не найдены.")
-
-        # 3. Генерируем trade_id для новых данных
-        if not df.empty:  # Проверяем, остались ли данные после удаления дубликатов
-            if 'trade_id' in existing_df.columns:  # Check for existing ids
-                max_id = existing_df['trade_id'].max()
-                if pd.isna(max_id):  # Check for NaN values
-                    max_id = 0  # Handle NaN case
-            else:
-                max_id = 0
-
-            start_id = int(max_id + 1)  # Make it int and handle potential NaN
-
-            df['trade_id'] = range(start_id, start_id + len(df))
-            print("Новые данные с сгенерированным trade_id:\n", df)
-        else:
-            print("После удаления дубликатов не осталось новых данных для добавления.")
-            df = pd.DataFrame()
-
-        # 4. Объединяем новые данные с существующими данными
-        if not df.empty:
-            combined_df = pd.concat([existing_df, df], ignore_index=True)
-        else:
-            combined_df = existing_df
-
-        print("Объединённые данные:\n", combined_df)
-
-        # 5. Сохраняем обновлённый DataFrame в CSV
-        combined_df.to_csv(filename, index=False)
-        print(f"Транзакции успешно сохранены в файл: {filename}")
-
+        existing_df = load_existing_transactions(filename)
+        df_remove_duplicates = find_and_remove_duplicates(df, existing_df)
+        df = generate_trade_ids(df_remove_duplicates, existing_df)
+        combined_df = combine_dataframes(existing_df, df)
+        save_transactions_to_csv(combined_df, filename)
     except Exception as e:
-        print(f"Ошибка при сохранении в CSV-файл: {e}")
+        print(f"Ошибка в процессе обработки и сохранения транзакций: {e}")
 
 
 if __name__ == '__main__':
@@ -210,5 +162,6 @@ if __name__ == '__main__':
     ]
     print(stocks * len(dates))
     df = generate_transactions(companies=stocks * len(dates), dates=dates)
+    print(df)
     filename = 'transactions.csv'
-    save_transactions_to_csv(df, filename)
+    process_and_save_transactions(df=df, filename=filename)

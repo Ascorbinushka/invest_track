@@ -24,6 +24,8 @@ CREATE TABLE if not exists financial_models.users (
 	last_name varchar NOT NULL,
     email varchar NOT NULL,
     country varchar NOT NULL,
+    gender varchar NOT NULL,
+    birthdate date NOT NULL,
 	CONSTRAINT users_pk PRIMARY KEY (users_id)
 );
 
@@ -36,7 +38,7 @@ CREATE TABLE if not exists financial_models.trade_execution (
 	trade_type varchar NOT NULL,
 	CONSTRAINT trade_execution_pk PRIMARY KEY (trade_id),
     CONSTRAINT trade_execution_stocks_fk FOREIGN KEY (ticker_id) REFERENCES financial_models.stocks(ticker_id),
-    CONSTRAINT trade_execution_users_fk FOREIGN KEY (user_id) REFERENCES financial_models.users(users_id)
+    CONSTRAINT trade_execution_users_fk FOREIGN KEY (users_id) REFERENCES financial_models.users(users_id)
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_stocks_daily_ticker_date
@@ -45,4 +47,3 @@ ON financial_models.stocks_daily (ticker_id, date);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_uniq_users
 ON financial_models.users (first_name, last_name);
-

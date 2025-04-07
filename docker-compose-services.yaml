@@ -44,8 +44,6 @@ services:
       timeout: 10s
       retries: 5
 
-
-
 volumes:
   chdata:
   pgdata:

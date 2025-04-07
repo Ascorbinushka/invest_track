@@ -1,7 +1,6 @@
-from typing import Any
-
 from equity_data_extractor.config import DatabaseConnection
 import psycopg2
+from datetime import datetime
 
 
 class Generate_DDL:
@@ -104,21 +103,23 @@ class Users:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def insert_user(self, first_name: str, last_name: str, email: str, country: str) -> None:
+    def insert_user(self, first_name: str, last_name: str, email: str, country: str, gender: str,
+                    birthdate: str) -> None:
         """Вставляем пользователей из csv"""
-        query = "INSERT INTO financial_models.users (first_name, last_name, email, country) VALUES (%s, %s, %s, %s) ON CONFLICT (first_name, last_name) DO NOTHING"
+        query = "INSERT INTO financial_models.users (first_name, last_name, email, country,gender,birthdate) VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (first_name, last_name) DO NOTHING"
         try:
             with self.db_connection.get_connection().cursor() as cursor:
-                cursor.execute(query, (first_name, last_name, email, country))
+                cursor.execute(query, (first_name, last_name, email, country, gender, birthdate))
                 row_count = cursor.rowcount
             self.db_connection.get_connection().commit()
             if row_count > 0:
-                print(f"Вставлен новый пользователь: {first_name}, {last_name},{email},{country}")
+                print(f"Вставлен новый пользователь: {first_name}, {last_name},{email},{country},{gender},{birthdate}")
             else:
                 print(f"Такой пользователь уже есть: {first_name}, {last_name}")
         except psycopg2.Error as e:
             self.db_connection.get_connection().rollback()
-            print(f"Ошибка при вставке пользователя: {first_name}, {last_name},{email},{country}. Ошибка {e}")
+            print(
+                f"Ошибка при вставке пользователя: {first_name}, {last_name},{email},{country},{gender},{birthdate}. Ошибка {e}")
 
     def get_user(self, first_name: str, last_name: str):
         query = f"SELECT users_id FROM financial_models.users WHERE first_name = %s AND last_name = %s"

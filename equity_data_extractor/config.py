@@ -1,16 +1,11 @@
-import os
 from typing import Any
 from sqlalchemy import create_engine
-
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 import psycopg2
 import dotenv
 
 dotenv.load_dotenv()
 
-
-# ENV_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.env')
-# print(ENV_PATH)
 
 class Settings(BaseSettings):
     PG_HOST: str
@@ -22,8 +17,9 @@ class Settings(BaseSettings):
     COMPANIES: str
     API_KEY: str
 
-    # model_config = SettingsConfigDict(env_file=ENV_PATH,
-    #                                   extra='ignore')
+    START_DATE: str
+    END_DATE: str
+
     def gp_engine(self) -> Any | None:
         db_string = f"postgresql+psycopg2://{self.PG_USER}:{self.PG_PASSWORD}@{self.PG_HOST}:{self.PG_PORT}/{self.PG_DATABASE}"
 
@@ -35,7 +31,6 @@ class Settings(BaseSettings):
         except Exception as e:
             print(f"Ошибка при создании движка SQLAlchemy: {e}")
             return None
-
 
 
 try:
@@ -68,7 +63,6 @@ class DatabaseConnection:
 
 if __name__ == '__main__':
     db_connection = DatabaseConnection.get_instance()
-    print(db_connection)
     query = (
         f"""
                 select 

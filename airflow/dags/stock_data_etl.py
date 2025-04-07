@@ -25,7 +25,6 @@ def save_ticker_to_json():
 
 def get_max_trade_id_xcom():
     db_connection = DatabaseConnection.get_instance()
-    max_trade_id = TradeExecution(db_connection).get_max_trade_id()
     print(max_trade_id[0][0])
     return max_trade_id[0][0]
 
@@ -116,13 +115,11 @@ if __name__ == '__main__':
     # Добавляем целевую папку и имя файла
     target_dir = os.path.join(grandparent_dir, target_folder)
     file_path = os.path.join(target_dir, target_file)
-    print(file_path)
     data = os.path.abspath(file_path)
     df = pd.read_csv(data)
     filter_df = filter_df(df=df, max_trade_id=max_trade_id)
     file_path_json = 'stocks.json'
     transactions_df = replace_ticker_with_id_from_json(df=filter_df, json_file=file_path_json)
-    print(transactions_df)
     df_to_db(df=transactions_df, schema='financial_models', table='trade_execution')
     # ETL - 2
     # 1 - забираем минимальную и максимальную дату каждой акций в xcom
